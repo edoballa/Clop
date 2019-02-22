@@ -1,0 +1,31 @@
+@startuml
+actor Utente
+participant main
+entity DatiCondivisi
+entity Semaforo
+
+Utente -> main ++ : start
+main -> Semaforo ** : new
+main -> DatiCondivisi ** : new
+
+main -> ThCavallo_1 ** : new
+main -> ThCavallo_2 ** : new
+main -> ThCavallo_3 ** : new
+main -> ThCavallo_4 ** : new
+main -> ThCavallo_5 ** : new
+main -> ThVisualizza ** : new
+
+Note over main : Join ThCavallo_1
+ThCavallo_1 -> main -- : return
+Note over main : Join ThCavallo_2
+ThCavallo_2 -> main -- : return
+Note over main : Join ThCavallo_3
+ThCavallo_3 -> main -- : return
+Note over main : Join ThCavallo_4
+ThCavallo_4 -> main -- : return
+Note over main : Join ThCavallo_5
+ThCavallo_5 -> main -- : return
+ThVisualizza -> main -- : interrupt
+
+main -> Utente -- : Programma terminato
+@enduml
