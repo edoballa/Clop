@@ -33,6 +33,12 @@ public class ThCavallo extends Thread {
      * @brief Variabile Int che serve per passare quale cavallo si muove.
      */
     private int pos;
+    /**
+     * @author Christian Sipione
+     *
+     * @brief Variabile Semaforo che serve per attuare la mutua esclusione.
+     */
+    Semaforo sem1;
 
     /**
      * @author Christian Sipione
@@ -47,13 +53,15 @@ public class ThCavallo extends Thread {
      * @param usaYield parametro che serve per l'utilizzo del metodo yield().
      * @param pos parametro che serve per passare quale cavallo si muove.
      * @param ptr parametro che serve per per richiamare i metodi della classe
+     * @param sem1 parametro che serve per applicare la mutuia esclusione
      * CcondividiDati.
      */
-    public ThCavallo(boolean usaSleep, boolean usaYield, int pos, CcondividiDati ptr) {
+    public ThCavallo(boolean usaSleep, boolean usaYield, int pos, CcondividiDati ptr, Semaforo sem1) {
         this.usaSleep = usaSleep;
         this.usaYield = usaYield;
         this.pos = pos;
         this.ptr = ptr;
+        this.sem1 = sem1;
     }
 
     /**
@@ -70,35 +78,74 @@ public class ThCavallo extends Thread {
     @Override
     public void run() {
         try {
-            while (true) {
+            for (int i = 0; i < 50; i++) {
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
-                ptr.AddString("Clop" + pos);
-                if (usaSleep) {
-                    Thread.sleep(100);
-                }
-                if (usaYield) {
-                    Thread.yield();
-                }
+                
+                //if (usaSleep) {
+                  //  Thread.sleep(100);
+                //}
+                //if (usaYield) {
+                  //  Thread.yield();
+                //}
+
+                ptr.WaitVisualizza2();
                 if (pos == 1) {
+                    System.out.println("Clop" + pos);
+                    sem1.Wait();
                     ptr.setC1();
+                    sem1.Signal();
                 }
                 if (pos == 2) {
+                    System.out.println("Clop" + pos);
+                    sem1.Wait();
                     ptr.setC2();
+                    sem1.Signal();
                 }
                 if (pos == 3) {
+                    System.out.println("Clop" + pos);
+                    sem1.Wait();
                     ptr.setC3();
+                    sem1.Signal();
                 }
                 if (pos == 4) {
+                    System.out.println("Clop" + pos);
+                    sem1.Wait();
                     ptr.setC4();
+                    sem1.Signal();
                 }
                 if (pos == 5) {
+                    System.out.println("Clop" + pos);
+                    sem1.Wait();
                     ptr.setC5();
+                    sem1.Signal();
                 }
+
+                ptr.SignalVisualizza1();
             }
+
+            ptr.SignalCorsaFinita();
+            ptr.setVincitore(pos);
+
         } catch (Exception e) {
 
+        }
+
+        if (pos == 1) {
+            ptr.SignalClop1();
+        }
+        if (pos == 2) {
+            ptr.SignalClop2();
+        }
+        if (pos == 3) {
+            ptr.SignalClop3();
+        }
+        if (pos == 4) {
+            ptr.SignalClop4();
+        }
+        if (pos == 5) {
+            ptr.SignalClop5();
         }
     }
 }

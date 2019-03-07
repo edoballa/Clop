@@ -1,20 +1,18 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package clop;
 
+import java.util.concurrent.Semaphore;
+
+/**
+ *
+ * @author Christian
+ */
 public class CcondividiDati {
 
-    /**
-     * @author Christian Sipione
-     *
-     * @brief Attributo Int che indica quante righe sono presenti nello schermo
-     */
-    private int elem;
-    /**
-     * @author Christian Sipione
-     *
-     * @brief Attributo String [] che servirá per visualizzare i vari passi dei
-     * cavalli.
-     */
-    private String[] schermo;
     /**
      * @author Christian Sipione
      *
@@ -41,6 +39,7 @@ public class CcondividiDati {
      * cavallo.
      */
     private int c4;
+
     /**
      * @author Christian Sipione
      *
@@ -56,19 +55,113 @@ public class CcondividiDati {
      *
      * Metodo che inizializza le variabili c1,c2,c3,c4,c5 a 0.
      */
+    
+    int vincitore;
+    
+    private Semaphore semClop1;
+    private Semaphore semClop2;
+    private Semaphore semClop3;
+    private Semaphore semClop4;
+    private Semaphore semClop5;
+    
+    private Semaphore semVisualizza1;
+    private Semaphore semVisualizza2;
+    private Semaphore semCorsaFinita;
+    
+    
     public CcondividiDati() {
         this.c1 = 0;
         this.c2 = 0;
         this.c3 = 0;
         this.c4 = 0;
         this.c5 = 0;
-        this.elem = 0;
-        this.schermo = new String[1000];
-        for (int i = 0; i < 1000; i++) {
-            schermo[i] = "";
-        }
+        semClop1 = new Semaphore(0);
+        semClop2 = new Semaphore(0);
+        semClop3 = new Semaphore(0);
+        semClop4 = new Semaphore(0);
+        semClop5 = new Semaphore(0);
+        
+        semVisualizza1 = new Semaphore(0);
+        semVisualizza2 = new Semaphore(1);
+        
+        semCorsaFinita=new Semaphore(0);
+        
+        vincitore=0;
+        
     }
-
+    
+    public int getVincitore() {
+        return vincitore;
+    }
+    
+    public void setVincitore(int vincitore) {
+        this.vincitore=vincitore;
+    }
+    public void WaitCorsaFinita() throws InterruptedException {
+        semCorsaFinita.acquire();
+    }
+    
+    
+    
+    public void WaitVisualizza1() throws InterruptedException {
+        semVisualizza1.acquire();
+    }
+    
+    public void WaitVisualizza2() throws InterruptedException {
+        semVisualizza2.acquire();
+    }
+    
+    public void WaitClop1() throws InterruptedException {
+        semClop1.acquire();
+    }
+    
+    public void WaitClop2() throws InterruptedException {
+        semClop2.acquire();
+    }
+    
+    public void WaitClop3() throws InterruptedException {
+        semClop3.acquire();
+    }
+    
+    public void WaitClop4() throws InterruptedException {
+        semClop4.acquire();
+    }
+    
+    public void WaitClop5() throws InterruptedException {
+        semClop5.acquire();
+    }
+    
+    public void SignalCorsaFinita() {
+        semCorsaFinita.release();
+    }
+    
+    public void SignalVisualizza1() throws InterruptedException {
+        semVisualizza1.release();
+    }
+    
+    public void SignalVisualizza2() throws InterruptedException {
+        semVisualizza2.release();
+    }
+    
+    public void SignalClop1() {
+        semClop1.release();
+    }
+    
+    public void SignalClop2() {
+        semClop2.release();
+    }
+    
+    public void SignalClop3() {
+        semClop3.release();
+    }
+    
+    public void SignalClop4() {
+        semClop4.release();
+    }
+    
+    public void SignalClop5() {
+        semClop5.release();
+    }
     /**
      * @author Christian Sipione
      *
@@ -76,7 +169,7 @@ public class CcondividiDati {
      *
      * Metodo che aumenta di 1 ogni volta che il cavallo compie un passo.
      */
-    public void setC1() {
+    public synchronized void setC1() {
         c1++;
     }
 
@@ -87,7 +180,7 @@ public class CcondividiDati {
      *
      * Metodo che aumenta di 1 ogni volta che il cavallo compie un passo.
      */
-    public void setC2() {
+    public synchronized void setC2() {
         c2++;
     }
 
@@ -98,7 +191,7 @@ public class CcondividiDati {
      *
      * Metodo che aumenta di 1 ogni volta che il cavallo compie un passo.
      */
-    public void setC3() {
+    public synchronized void setC3() {
         c3++;
     }
 
@@ -109,7 +202,7 @@ public class CcondividiDati {
      *
      * Metodo che aumenta di 1 ogni volta che il cavallo compie un passo.
      */
-    public void setC4() {
+    public synchronized void setC4() {
         c4++;
     }
 
@@ -120,7 +213,7 @@ public class CcondividiDati {
      *
      * Metodo che aumenta di 1 ogni volta che il cavallo compie un passo.
      */
-    public void setC5() {
+    public synchronized void setC5() {
         c5++;
     }
 
@@ -131,117 +224,51 @@ public class CcondividiDati {
      *
      * @return Variabile che rappresenta il numero di passi del cavallo.
      */
-    public int getC1() {
+    public synchronized int getC1() {
         return c1;
     }
 
     /**
      * @author Christian Sipione
      *
-     * @brief Metodo che ritorna il numero di passi del secondo cavallo.
+     * @brief Metodo che ritorna il numero di passi del primo cavallo.
      *
      * @return Variabile che rappresenta il numero di passi del cavallo.
      */
-    public int getC2() {
+    public synchronized int getC2() {
         return c2;
     }
 
     /**
      * @author Christian Sipione
      *
-     * @brief Metodo che ritorna il numero di passi del terzo cavallo.
+     * @brief Metodo che ritorna il numero di passi del primo cavallo.
      *
      * @return Variabile che rappresenta il numero di passi del cavallo.
      */
-    public int getC3() {
+    public synchronized int getC3() {
         return c3;
     }
 
     /**
      * @author Christian Sipione
      *
-     * @brief Metodo che ritorna il numero di passi del quarto cavallo.
+     * @brief Metodo che ritorna il numero di passi del primo cavallo.
      *
      * @return Variabile che rappresenta il numero di passi del cavallo.
      */
-    public int getC4() {
+    public synchronized int getC4() {
         return c4;
     }
 
     /**
      * @author Christian Sipione
      *
-     * @brief Metodo che ritorna il numero di passi del quinto cavallo.
+     * @brief Metodo che ritorna il numero di passi del primo cavallo.
      *
      * @return Variabile che rappresenta il numero di passi del cavallo.
      */
-    public int getC5() {
+    public synchronized int getC5() {
         return c5;
     }
-
-    /**
-     * @author Christian Sipione
-     *
-     * @brief: Metodo get di una posizione dell'attributo schermo
-     *
-     * Questo metodo si occupa di ritornare il valore contenuto in una
-     * posizione, indicata dal parametro che gli viene passato, dell'attributo
-     * schermo.
-     *
-     * @param posizione Valore usato come indice dell'array per identificare il
-     * valore da ritornare
-     *
-     * @return Valore contenuto in una posizione dell'attributo schermo
-     */
-    public String getRiga(int posizione) {
-        return schermo[posizione];
-    }
-
-    /**
-     * @author Christian Sipione
-     *
-     * @brief Metodo get dell'attributo elem
-     *
-     * questo metodo si occupa di ritornare il valore dell'attributo elem di
-     * questa classe.
-     *
-     * @return Valore dell'attributo elem
-     */
-    public int getElem() {
-        return elem;
-    }
-
-    /**
-     * @author Christian Sipione
-     *
-     * @brief: Metodo che permette di visualizzare i clop dei cavalli
-     *
-     * In questo metodo viene fatto l'output a schermo dei valori contenuti in
-     * schermo fino a quando si arriva al numero di linee salvate nello stesso
-     * attributo.
-     *
-     */
-    public void getSchermo() {
-        for (int i = 0; i < elem; i++) {
-            if (schermo[i].equals("")) {
-                i = 10000;
-            } else {
-                System.out.println(schermo[i]);
-            }
-        }
-    }
-
-    /**
-     * @author Christian Sipione
-     *
-     * @brief: Metodo che aggiunge una stringa
-     *
-     * @param str Stringa in cui è contenuto il valore della linea di testo da
-     * memorizzare.
-     */
-    public void AddString(String str) {
-        schermo[elem] = str;
-        elem++;
-    }
-
 }
